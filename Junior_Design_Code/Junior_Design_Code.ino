@@ -9,13 +9,16 @@
 #include <LiquidCrystal.h>
 #define bt_P A1 // Start Button
 #define bt_L A2 // Stop Button
-#define echoPin 12 // Sensor Pins
-#define trigPin 13
+//Removed ultrasonic pin definitions [Arum]
+//Adding pins for IR bean breaks
+#define sensor1 51
+#define sensor2 53
 
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7); // define lcd
-const int IN1 = 10;// DC Motor Control
-const int IN2 = 11;
-const int ENA = 9; // DC Motor Speed Control
+//Changed DC motor pin value and name [Arum]
+const int DCPin = 55;// DC Motor Control
+//const int IN2 = 11; Commented these lines out [Arum]
+//const int ENA = 9; // DC Motor Speed Control
 long duration; // variable for the duration of sound wave travel
 int distance; 
 int x = 0;
@@ -36,8 +39,8 @@ void setup(){
   pinMode(bt_P, INPUT_PULLUP);
   pinMode(bt_L, INPUT_PULLUP);
     
-  pinMode(trigPin, OUTPUT); 
-  pinMode(echoPin, INPUT);
+  //pinMode(trigPin, OUTPUT); 
+  //pinMode(echoPin, INPUT);
     
 // Guli -- lcd  
   lcd.begin(16,2);  
@@ -74,12 +77,12 @@ void loop(){
     digitalWrite(IN2, HIGH);           
   }
   delay(50);
-  digitalWrite(trigPin, LOW);
+//  digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
-  digitalWrite(trigPin, HIGH);
+//  digitalWrite(trigPin, HIGH);
   delayMicroseconds(10);
-  digitalWrite(trigPin, LOW);
-  duration = pulseIn(echoPin, HIGH);
+//  digitalWrite(trigPin, LOW);
+//  duration = pulseIn(echoPin, HIGH);
   distance = duration * 0.034 / 2;
   analogWrite(ENA, 255); //control speed
   lcd.setCursor(0,1);
