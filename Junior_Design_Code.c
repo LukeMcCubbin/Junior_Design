@@ -3,7 +3,7 @@
 //Comments 
 /*
  * Sections to write are 1. overall code, 2. Conveyor belt, 3. sensors, 4. XY  coordinate
- * 
+ * test 
  */
 
 #include <LiquidCrystal.h>
