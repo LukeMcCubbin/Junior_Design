@@ -114,6 +114,17 @@ void loop(){
 
     /*
      * 
+     * 
+     * 
+     * 
+  for(int i =0; i< 200; i++){
+    Stepperx.step(1);
+    delay(10);
+  }
+
+delay(1000);
+
+  
 #include <Stepper.h>
 
 // Number of steps per output rotation
