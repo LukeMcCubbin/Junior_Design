@@ -5,8 +5,6 @@
 const int stepPerRevolution=200; 
 
 Stepper Stepperx(stepPerRevolution, 5,11,2,8);
-//Stepper Steppery(stepPerRevolution, 3,6,9,12);
-//Stepper Stepperz(stepPerRevolution, 4,7,10,13);
 int stepCount = 0; 
 void setup() {
 
@@ -20,13 +18,5 @@ for(int i =0; i< 200; i++){
 }
 
 delay(1000);
-//Stepperx.step(400);
-//Steppery.step(1);
-//Stepperz.step(1);  
-
-//stepCount++;
-//delay(10);
-//Stepperx.step(-1);
-//delay(10);
 
 }
