@@ -6,30 +6,39 @@
  * 
  */
 
+//Define 
 #include <LiquidCrystal.h>
+#include <Stepper.h>
 #define bt_P A1 // Start Button
 #define bt_L A2 // Stop Button
-//Removed ultrasonic pin definitions [Arum]
-//Adding pins for IR bean breaks
 #define sensor1 51
 #define sensor2 53
 
+//LCD
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7); // define lcd
-//Changed DC motor pin value and name [Arum]
+
+//DC
 const int DCPin = 55;// DC Motor Control
 //const int IN2 = 11; Commented these lines out [Arum]
 //const int ENA = 9; // DC Motor Speed Control
+
+//Steppers
+Stepper uPStepper(stepsPerRevolution, 12, 11, 10, 9);
+Stepper myStepper(stepsPerRevolution, 12, 11, 10, 9);
+Stepper myStepper(stepsPerRevolution, 12, 11, 10, 9);
+
+
+//Other
 long duration; // variable for the duration of sound wave travel
 int distance; 
 int x = 0;
-
 int read_ADC = 0;
 int duty_cycle; // PWM
 int duty_cycle_lcd;
 int set = 1;
 long randNumber;
 
-
+//First Setup - On start
 void setup(){
   Serial.begin(9600);
   pinMode (IN1, OUTPUT);
@@ -114,6 +123,8 @@ void loop(){
 
     /*
      * 
+     * 
+
      * 
      * 
      * 
