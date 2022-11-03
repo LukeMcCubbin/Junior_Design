@@ -18,14 +18,14 @@
 LiquidCrystal lcd(2, 3, 4, 5, 6, 7); // define lcd
 
 //DC
-const int DCPin = 55;// DC Motor Control
+const int DCPin = 49;// DC Motor Control
 //const int IN2 = 11; Commented these lines out [Arum]
 //const int ENA = 9; // DC Motor Speed Control
 
 //Steppers
-Stepper uPStepper(stepsPerRevolution, 12, 11, 10, 9);
-Stepper myStepper(stepsPerRevolution, 12, 11, 10, 9);
-Stepper myStepper(stepsPerRevolution, 12, 11, 10, 9);
+Stepper upStepper(stepsPerRevolution, 12, 11, 10, 9);
+Stepper Stepper1(stepsPerRevolution, 12, 11, 10, 9);
+Stepper Stepper2(stepsPerRevolution, 12, 11, 10, 9);
 
 
 //Other
