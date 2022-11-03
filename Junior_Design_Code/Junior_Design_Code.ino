@@ -23,9 +23,9 @@ const int DCPin = 49;// DC Motor Control
 //const int ENA = 9; // DC Motor Speed Control
 
 //Steppers
-Stepper upStepper(stepsPerRevolution, 1, 2, 3, 4);
-Stepper Stepper1(stepsPerRevolution, 5, 6, 7, 8);
-Stepper Stepper2(stepsPerRevolution, 9, 10, 11, 12);
+Stepper upStepper(stepsPerRevolution, 2, 3, 4, 5);
+//Stepper Stepper1(stepsPerRevolution, 6, 7, 8, 9);
+//Stepper Stepper2(stepsPerRevolution, 10, 11, 12, 13);
 
 
 //Other
@@ -94,27 +94,14 @@ void loop(){
 //  duration = pulseIn(echoPin, HIGH);
   distance = duration * 0.034 / 2;
   analogWrite(ENA, 255); //control speed
-  lcd.setCursor(0,1);
-  lcd.print("Distance: ");
-  lcd.print(distance);
-  lcd.println(" cm");
   
-  // Guli -- Sensor (For ultrasonic sensor, please ignore)
-    if(distance < 30){
-      analogWrite(ENA, 100);
-      x = x + 1;
-      delay(50);
-      if(x == randNumber){
-        lcd.clear();
-        randNumber = random(1, 9);
-        lcd.print("  New Number   ");
-        lcd.print(randNumber);
-        delay(2000); 
-        lcd.clear();
-        x = 0;
-        delay(2000);
-      }
+    
+    for(int i =0; i< 200; i++){
+      Stepperx.step(1);
+    delay(10);
     }
+
+    delay(1000);
 
     //////////////Section for Luke
     //object oriented
