@@ -33,4 +33,5 @@ int LoadProcess(int sensor, int motor, int batchSize){
   lcd.clear();
   lcd.println("Batch Loaded!");
   delay(1000);
+  return 0; //Used return to make sure the function completes honestly unnessecary
 }
