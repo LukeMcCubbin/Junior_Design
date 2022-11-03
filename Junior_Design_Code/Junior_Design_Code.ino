@@ -23,9 +23,9 @@ const int DCPin = 49;// DC Motor Control
 //const int ENA = 9; // DC Motor Speed Control
 
 //Steppers
-Stepper upStepper(stepsPerRevolution, 12, 11, 10, 9);
-Stepper Stepper1(stepsPerRevolution, 12, 11, 10, 9);
-Stepper Stepper2(stepsPerRevolution, 12, 11, 10, 9);
+Stepper upStepper(stepsPerRevolution, 1, 2, 3, 4);
+Stepper Stepper1(stepsPerRevolution, 5, 6, 7, 8);
+Stepper Stepper2(stepsPerRevolution, 9, 10, 11, 12);
 
 
 //Other
