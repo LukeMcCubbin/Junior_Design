@@ -5,10 +5,10 @@ void StartBatch(long* randNum, LiquidCrystal lcd){
   delay(200);
   lcd.clear();
   lcd.print("Please load: ");
-  lcd.println(randNum);
+  lcd.println(*randNum);
 }
 
-void LoadProcess(int sensor, int motor, int batchSize){
+void LoadProcess(int sensor, int motor, int batchSize, LiquidCrystal lcd){
   //Function goes through process to load batch onto conveyor
   int prevSensor = digitalRead(sensor);
   int numLoad = 0;
@@ -23,6 +23,7 @@ void LoadProcess(int sensor, int motor, int batchSize){
     }
     if(prevSensor == LOW && digitalRead(sensor) == HIGH){
       //On beam-restore
+      //delay here to create a gap between 
       digitalWrite(motor, LOW);
       numLoad++;//Once beam is cleared the box is loaded and incremented
       lcd.clear();
@@ -38,5 +39,12 @@ void LoadProcess(int sensor, int motor, int batchSize){
 
 void ReadyBatch(int sensor, int motor){
   //This function readies the batch for dropping onto pallet
-  
+  while(digitalRead(sensor) == HIGH){
+    digitalWrite(motor, HIGH);//Move until beam breaks
+  }
+  digitalWrite(motor, LOW);
+}
+
+void LoadBox(){
+  //Drop box through chute
 }
