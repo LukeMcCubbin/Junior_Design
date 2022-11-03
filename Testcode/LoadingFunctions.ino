@@ -6,7 +6,6 @@ void StartBatch(long* randNum, LiquidCrystal lcd){
   lcd.clear();
   lcd.print("Please load: ");
   lcd.println(randNum);
-  *loadTrack = 0;
 }
 
 int LoadProcess(int sensor, int motor, int batchSize){
