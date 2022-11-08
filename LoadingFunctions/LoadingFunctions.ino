@@ -1,4 +1,36 @@
 #include <LiquidCrystal.h>
+#include <Stepper.h>
+#define sensor1 51
+#define sensor2 53
+#define DCMotor 49
+LiquidCrystal lcd(23, 25, 27 29, 31, 33);
+
+int prevSensor;
+int onPallet = 0; //the number of boxes on he pallet
+long batchSize;
+int stepsPerRevolution = 200;
+Stepper upStepper(stepsPerRevolution, 2, 3, 4, 5);
+
+//Function definitions
+void StartBatch(long* randNum, LiquidCrystal lcd);
+void LoadProcess(int sensor, int motor, int batchSize, LiquidCrystal lcd);
+void ReadyBatch(int sensor, int motor);
+void LoadBox(int sensor, int motor, int *numOnPallet);
+
+void setup() {
+  pinMode(sensor1, INPUT_PULLUP);
+  pinMode(sensor2, INPUT_PULLUP);
+  pinMode(DCMotor, OUTPUT);
+  prevSensor = digitalRead(sensor);
+  Serial.begin(9600);
+}
+
+void loop() {
+  StartBatch(&batchSize, lcd);
+  LoadProcess(sensor1, DCMotor, batchSize, lcd);
+  ReadyBatch(sensor2, DCMotor);
+  delay(5000);
+}
 void StartBatch(long* randNum, LiquidCrystal lcd){
   randomSeed(analogRead(A0));
   *randNum = random(1, 9);
