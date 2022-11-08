@@ -11,22 +11,29 @@
 #include <Stepper.h>
 #define bt_P A1 // Start Button
 #define bt_L A2 // Stop Button
-#define sensor1 51
-#define sensor2 53
 
-//LCD
-LiquidCrystal lcd(2, 3, 4, 5, 6, 7); // define lcd
+//LCD pins
+int rs=31;
+int en=33;
+int d4=23;
+int d5=25;
+int d6=27;
+int d7=29;
+
+LiquidCrystal lcd(rs,en,d4,d5,d6,d7); // define lcd
 
 //DC
-const int DCPin = 49;// DC Motor Control
-//const int IN2 = 11; Commented these lines out [Arum]
-//const int ENA = 9; // DC Motor Speed Control
+const int IN1 = 48;
+const int IN2 = 50;
+const int ENA = 52;
 
 //Steppers
 Stepper upStepper(stepsPerRevolution, 2, 3, 4, 5);
-//Stepper Stepper1(stepsPerRevolution, 6, 7, 8, 9);
-//Stepper Stepper2(stepsPerRevolution, 10, 11, 12, 13);
+Stepper Stepper1(stepsPerRevolution, 6, 7, 8, 9);
+Stepper Stepper2(stepsPerRevolution, 10, 11, 12, 13);
 
+//Sensors
+const int S = 33;
 
 //Other
 long duration; // variable for the duration of sound wave travel
