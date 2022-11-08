@@ -1,0 +1,101 @@
+//In this code outline I am going to make an outline of how I think the code should run.
+// I will appreaciate any aditional comments or changes
+
+process state = manual hand loading into conveyor
+
+
+//pseudo code
+
+- Initialize things
+	*stepperUp, left, right
+	*DCmotor
+	*2 sensors
+	*LCD
+
+	//What else do I need pins for?
+
+
+-functions:
+	- processblock: process state
+		(waits for 2 seconds)
+		(runs DC motor for 1)
+		(sensor == 1 then countblock++)
+		(when countbock = randnum -1) got to state prevNum
+
+	- loadblock: loading state
+		(runs until sensor == 1)
+		(waits for cooridnate system to finish loading)
+		(runs for 2 seconds or sensor == 1)
+		(countblock --)
+      
+	- lower_level:
+		(step block down 1 second)
+		(wait)
+		return state +1;
+	- Unload 
+		wait 
+
+
+-Always loops
+during always while loop: check unputs(buttons)
+
+	- required conditions while STOP_button !=1,
+	- if  
+
+
+
+-States: {
+
+	default(bottom left) 
+
+	1: (load position top left level up)
+		- stepper up 1 second, 3*200 rotations?
+		- call loadblock
+		- call lower_level
+
+	2: (load position top left level down)
+		(also the default state)
+		- call loadblock
+
+	3:(load position top right level up)
+		-stepper left, right move;
+		-stepper up 1 second
+		-call loadblock
+		-call lower_level
+
+	4:(load position top right level down)
+		-call loadblock
+
+	5:(load position bottom right level up)
+		-stepper left, right move;
+		-stepper up 1 second
+		-call loadblock
+		-call lower_level
+
+	6:(load position bottom right level down)
+		-call loadblock
+	
+	7:(load position bottom left level up)
+		-stepper left, right move;
+		-stepper up 1 second
+		-call loadblock
+		-call lower_level
+
+	8:(load position bottom left level down)
+		-call loadblock
+		- Done call unload 
+		- move left right (return to default)
+
+
+}
+
+
+
+
+	
+
+	
+
+
+	
+	
