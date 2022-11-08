@@ -49,8 +49,8 @@ void LoadProcess(int sensor, int motor, int batchSize, LiquidCrystal lcd){
   lcd.print(numLoad);
   lcd.println(" boxes loaded");
   while(numLoad < batchSize){
-    if(digitalRead(sensor) == LOW){
-      //While beam broken, beam break not needed.
+    if(prevSensor == HIGH && digitalRead(sensor) == LOW){
+      //On beam break
       digitalWrite(motor, HIGH);
     }
     if(prevSensor == LOW && digitalRead(sensor) == HIGH){
@@ -62,6 +62,7 @@ void LoadProcess(int sensor, int motor, int batchSize, LiquidCrystal lcd){
       lcd.print(numLoad);
       lcd.println(" boxes loaded");
     }
+    prevSensor = digitalRead(sensor);
     delay(100);
   }
   lcd.clear();
@@ -71,8 +72,10 @@ void LoadProcess(int sensor, int motor, int batchSize, LiquidCrystal lcd){
 
 void ReadyBatch(int sensor, int motor){
   //This function readies the batch for dropping onto pallet
+  digitalWrite(motor, HIGH);
   while(digitalRead(sensor) == HIGH){
-    digitalWrite(motor, HIGH);//Move until beam breaks
+    //Move until beam breaks
+    delay(100);
   }
   digitalWrite(motor, LOW);
 }
