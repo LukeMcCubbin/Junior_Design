@@ -4,7 +4,7 @@
 #define sensor2 53
 #define DCMotor 48
 #define DCEnable 50
-LiquidCrystal lcd(23, 25, 27 29, 31, 33);
+LiquidCrystal lcd(23, 25, 27, 29, 31, 33);
 
 int onPallet = 0; //the number of boxes on he pallet
 long batchSize;
@@ -31,8 +31,9 @@ void loop() {
   ReadyBatch(sensor2, DCMotor);
   delay(5000);
 }
+
 void StartBatch(long* randNum, LiquidCrystal lcd){
-  randomSeed(analogRead(A0));
+//  randomSeed(analogRead(A0));
   *randNum = random(1, 9);
   delay(200);
   lcd.clear();
