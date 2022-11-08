@@ -11,6 +11,7 @@
 #include <Stepper.h>
 #define bt_P A1 // Start Button
 #define bt_L A2 // Stop Button
+//testing github
 
 //LCD pins
 int rs=31;
