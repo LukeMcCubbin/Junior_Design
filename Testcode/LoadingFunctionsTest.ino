@@ -1,4 +1,4 @@
-//Me Code!
+/*
 #include <LiquidCrystal.h>
 #include <Stepper.h>
 #define sensor1 51
@@ -89,4 +89,4 @@ void LoadBox(int sensor, int motor, int *numOnPallet){
   }
   digitalWrite(motor, LOW);
   *numOnPallet++;
-}
+}*/
