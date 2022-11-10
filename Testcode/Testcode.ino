@@ -6,9 +6,12 @@
 #define bt_start A1 // Start Button
 #define bt_Stop A2 // Stop Button
 
-const int stepPerRevolution=200; 
+const int stepsPerRevolution=200; 
 
-Stepper Stepperx(stepPerRevolution, 2,3,4,5);
+Stepper StepperUp(stepsPerRevolution, 2,3,4,5);
+//Stepper Stepper1(stepsPerRevolution, 6, 7, 8, 9);
+//Stepper Stepper2(stepsPerRevolution, 10, 11, 12, 13);
+
 int stepCount = 0; 
 
 
@@ -20,21 +23,34 @@ int d6=27;
 int d7=29;
 int tm=1000;
 int j;
+int state = 1;
 
 int randNum = 0;
 
 LiquidCrystal lcd(rs,en,d4,d5,d6,d7);
 
-void StartBatch(int* randNum, LiquidCrystal lcd){
-  randomSeed(analogRead(A0));
-  *randNum = random(1, 9);
-  delay(200);
+int randGen(){
+int randnum;
+randnum = random(1, 9);
+return randnum;
+}
+
+void StartBatch(int randNum, LiquidCrystal lcd){
+  //randomSeed(analogRead(A0));
+
   lcd.clear();
   lcd.print("Please load: ");
-  lcd.print(*randNum);
-  delay(10000);
+  lcd.print(randNum);
   //*loadTrack = 0;
 }
+
+void lower_level(Stepper stepper){
+ for(int i =0; i< 200; i++){
+  stepper.step(1);
+  delay(10);
+}
+}
+
 
 //Setup
 void setup() {
@@ -49,16 +65,28 @@ void setup() {
 
 //Loop
 void loop() {
+  int randNum = randGen();
+  StartBatch(randNum,lcd);
+  switch (state){
+
+    case 1:
+      StartBatch(randNum,lcd);
+      lower_level(StepperUp);
+      delay(100);
+      break;
+
+      default: 
+        break;
+    
+    
+  }
+
+  /*
 StartBatch(&randNum, lcd);
 delay(200);
-
-for(int i =0; i< 200; i++){
-  Stepperx.step(1);
-  delay(10);
-}
+lower_level(StepperUp);
 
 delay(1000);
+*/
 
 }
-
-//}
