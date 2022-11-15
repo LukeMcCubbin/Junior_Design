@@ -1,4 +1,4 @@
-@ -1,64 +0,0 @@
+
 //LCD Code
 /* PROJECT BY MANISH KUMAR YADAV*/
 #include<LiquidCrystal.h>
@@ -7,10 +7,20 @@
 #define bt_start A1 // Start Button
 #define bt_Stop A2 // Stop Button
 
+//stepper
 const int stepPerRevolution=200; 
-
-Stepper Stepperx(stepPerRevolution, 2,3,4,5);
+Stepper StepperUp(stepPerRevolution, 2,3,4,5);
+Stepper StepperLeft(stepPerRevolution, 6,7,8,9);
+Stepper StepperRight(stepPerRevolution, 10,11,12,13);
 int stepCount = 0; 
+
+//DC Motor
+int speedPin=52;
+int dir1 = 50;
+//int dir2 = 48;
+int mSpeed=255;
+
+
 
 
 int rs=31;
@@ -31,9 +41,12 @@ void StartBatch(int* randNum, LiquidCrystal lcd){
   *randNum = random(1, 9);
   delay(200);
   lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Processing :");
+  lcd.setCursor(0,1);
   lcd.print("Please load: ");
   lcd.print(*randNum);
-  delay(10000);
+  delay(100);
   //*loadTrack = 0;
 }
 
@@ -42,23 +55,34 @@ void setup() {
  lcd.begin(16,2); 
  Serial.begin(9600); 
 
- //pinMode(bt_P, INPUT_PULLUP);
- //pinMode(bt_L, INPUT_PULLUP);
- //StartBatch(randNum, lcd);
- 
+ //DC motor
+ pinMode(speedPin,OUTPUT);
+ pinMode(dir1,OUTPUT);
+ StepperLeft.setSpeed(30);
+ StepperUp.setSpeed(30);
+
+
+
 }
 
 //Loop
 void loop() {
-StartBatch(&randNum, lcd);
-delay(200);
-
-for(int i =0; i< 200; i++){
-  Stepperx.step(1);
+  StartBatch(&randNum, lcd);
   delay(10);
-}
+  
+  digitalWrite(dir1,HIGH);
+  analogWrite(speedPin,mSpeed);
 
-delay(1000);
+ //StepperLeft.step(stepPerRevolution);
+ 
+ for(int i =0; i< 200; i++){
+  //StepperUp.step(1);
+  StepperLeft.step(1);
+  delay(10);
+ }
+ 
+
+//delay(10);
 
 }
 

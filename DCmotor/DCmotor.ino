@@ -2,7 +2,7 @@ int speedPin=52;
 int dir1 = 50;
 int dir2 = 48;
 
-int mSpeed=1200;
+int mSpeed=255;
 
 
 void setup() {
