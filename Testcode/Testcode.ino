@@ -9,9 +9,9 @@
 
 //stepper
 const int stepPerRevolution=200; 
-Stepper StepperUp(stepPerRevolution, 2,3,4,5);
-Stepper StepperLeft(stepPerRevolution, 6,7,8,9);
-Stepper StepperRight(stepPerRevolution, 10,11,12,13);
+Stepper StepperLeft(stepPerRevolution, 2,3,4,5);
+Stepper StepperRight(stepPerRevolution, 6,7,8,9);
+Stepper StepperUp(stepPerRevolution, 10,11,12,13);
 int stepCount = 0; 
 
 //DC Motor
@@ -42,11 +42,21 @@ void StartBatch(int* randNum, LiquidCrystal lcd){
   delay(200);
   lcd.clear();
   lcd.setCursor(0,0);
-  lcd.print("Processing :");
+  lcd.print("Loading :");
   lcd.setCursor(0,1);
   lcd.print("Please load: ");
   lcd.print(*randNum);
   delay(100);
+  //*loadTrack = 0;
+}
+
+void printScreen(int val, LiquidCrystal lcd){
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Processing :");
+  lcd.setCursor(0,1);
+  lcd.print("value: ");
+  lcd.print(val);
   //*loadTrack = 0;
 }
 
@@ -76,6 +86,7 @@ void DC_run(){
 }
 
 
+
 //Setup
 void setup() {
  lcd.begin(16,2); 
@@ -85,7 +96,7 @@ void setup() {
  pinMode(speedPin,OUTPUT);
  pinMode(dir1,OUTPUT);
  StartBatch(&randNum, lcd);
-  delay(10);
+ delay(10);
  //StepperLeft.setSpeed(30);
  //StepperUp.setSpeed(30);
 }
@@ -111,49 +122,89 @@ void loop() {
 
  switch(expression) {
   case 0:
+      //prints this case
+      printScreen(expression+1,lcd);
+      //runsDC motor
+      DC_run();
+      //falls
+      delay(50);
+      //lowers the lift 
       lower_level();
       expression ++;
+      
       break;
   case 1:
+      //prints this case
+      printScreen(expression+1,lcd);
+      DC_run();
+      delay(50);
       raise_level();
       //across
       expression++;
       break;
   case 2:
-      raise_level();
+      //prints this case
+      printScreen(expression+1,lcd);
+      DC_run();
+      delay(50);
+      lower_level();
       //across
       expression++;
       break;
   case 3:
+      //prints this case
+      printScreen(expression+1,lcd);
+      DC_run();
+      delay(50);
       raise_level();
       //across
       expression++;
       break;
   case 4:
-      raise_level();
+      //prints this case
+      printScreen(expression+1,lcd);
+      DC_run();
+      delay(50);
+      lower_level();
       //across
       expression++;
       break;
   case 5:
+      //prints this case
+      printScreen(expression+1,lcd);
+      DC_run();
+      delay(50);
       raise_level();
       //across
       expression++;
       break;
   case 6:
-      raise_level();
+      //prints this case
+      printScreen(expression+1,lcd);
+      DC_run();
+      delay(50);
+      lower_level();
       //across
       expression++;
       break;
   case 7:
-      lower_level();
+      //prints this case
+      printScreen(expression+1,lcd);
+      DC_run();
+      delay(50);
+      raise_level();
       expression ++;
       break;
   //This one may be unnecessary
+  /*
   case 8:
-      raise_level();
+       DC_run();
+      delay(50);
+      lower_level();
       //across
       expression++;
       break;
+      */
   default:
       expression = 0;
       delay(20);
