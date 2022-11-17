@@ -20,7 +20,6 @@ const int stepPerRevolution=200;
 Stepper StepperLeft(stepPerRevolution, 2,3,4,5);
 Stepper StepperRight(stepPerRevolution, 6,7,8,9);
 Stepper StepperUp(stepPerRevolution, 10,11,12,13);
-int stepCount = 0; 
 
 //DC Motor
 int speedPin=52;
@@ -49,60 +48,15 @@ int sensor = 0;
 
 LiquidCrystal lcd(rs,en,d4,d5,d6,d7);
 
-void StartBatch(int* randNum, LiquidCrystal lcd){
-  randomSeed(analogRead(A0));
-  *randNum = random(1, 9);
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("Loading :");
-  lcd.setCursor(0,1);
-  lcd.print("Random number: ");
-  lcd.print(*randNum);
-  delay(1000);
-  //*loadTrack = 0;
-}
-
-void printScreen(int val, LiquidCrystal lcd){
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("Processing :");
-  lcd.setCursor(0,1);
-  lcd.print("value: ");
-  lcd.print(val);
-}
-void printScreen2(int val, LiquidCrystal lcd){
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("Loading :");
-  lcd.setCursor(0,1);
-  lcd.print("remaining: ");
-  lcd.print(val-1);
-}
-
-
-void lower_level(){
-  for(int i =0; i< 100; i++){
-   StepperUp.step(1);
-   //StepperLeft.step(-1);
-   //StepperRight.step(-1);
-   delay(10);
-  }
-}
-void raise_level(){
-  for(int i =0; i< 100; i++){
-   StepperUp.step(-1);
-   //StepperLeft.step(1);
-   //StepperRight.step(1);
-   delay(10);
-  }
-}
-void DC_run(int t){
-   analogWrite(speedPin,mSpeed);
-   digitalWrite(dir1,HIGH);
-   delay(t * 10);
-   digitalWrite(dir1,LOW);
-}
-
+void StartBatch(int* randNum, LiquidCrystal lcd);
+void printScreen(int val, LiquidCrystal lcd);
+void printScreen2(int val, LiquidCrystal lcd);
+void lower_level();
+void raise_level();
+void DC_run(int t);
+void moveInY(int dir, int steps, Stepper step1, Stepper step2);// moves across belt
+void moveInX(int dir, int steps, Stepper step1, Stepper step2);// moves along belt
+//dir should be 1 or -1
 
 
 //Setup
@@ -118,6 +72,7 @@ void setup() {
  pinMode(SENSORPIN, INPUT);
  pinMode(SENSORPIN2, INPUT_PULLUP);     
  digitalWrite(SENSORPIN, HIGH); // turn on the pullup
+ pinMode(bt_start, INPUT);
  //StepperLeft.setSpeed(30);
  //StepperUp.setSpeed(30);
 }
@@ -141,19 +96,13 @@ void loop() {
     //int randNum; int SENSORPIN2
     tempval = digitalRead(SENSORPIN2);
         
-    while(count < (int)randNum){
+    while(count < randNum){
       sensor = digitalRead(SENSORPIN2);
       if(tempval == HIGH && sensor == LOW){
         //run on beam-break
         digitalWrite(dir1, HIGH);
-        //print
-      }
-      if(tempval == LOW && sensor == HIGH){
-        //run on beam-restore
-        delay(10);//Spacing between boxes
+        delay(100);
         digitalWrite(dir1, LOW);
-        count++;
-        //print
       }
       tempval = sensor; //store current into previous
     }
@@ -258,26 +207,80 @@ void loop() {
                 printScreen(expression+1,lcd);
                 DC_run(200);
                 delay(50);
-                raise_level();
                 expression ++;
                 count++;
                 break;
-                //This one may be unnecessary
-                /*
-                case 8:
-                     DC_run();
-                    delay(50);
-                    lower_level();
-                    //across
-                    expression++;
-                    break;
-                    */
-                    
             default:
             //Could be a rest state for replacing the pallet
-                delay(2000);
-                count++;
-                expression = 0;
+                delay(10);
+                if(digitalRead(bt_start) == HIGH){
+                  expression = 0;
+                  raise_level();
+                }
         }
     }
+}
+
+void StartBatch(int* randNum, LiquidCrystal lcd){
+  randomSeed(analogRead(A0));
+  *randNum = random(1, 9);
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Loading :");
+  lcd.setCursor(0,1);
+  lcd.print("Random number: ");
+  lcd.print(*randNum);
+  delay(1000);
+  //*loadTrack = 0;
+}
+
+void printScreen(int val, LiquidCrystal lcd){
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Processing :");
+  lcd.setCursor(0,1);
+  lcd.print("value: ");
+  lcd.print(val);
+}
+void printScreen2(int val, LiquidCrystal lcd){
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Loading :");
+  lcd.setCursor(0,1);
+  lcd.print("remaining: ");
+  lcd.print(val-1);
+}
+void lower_level(){
+  for(int i =0; i< 100; i++){
+   StepperUp.step(1);
+   //StepperLeft.step(-1);
+   //StepperRight.step(-1);
+   delay(10);
+  }
+}
+void raise_level(){
+  for(int i =0; i< 100; i++){
+   StepperUp.step(-1);
+   //StepperLeft.step(1);
+   //StepperRight.step(1);
+   delay(10);
+  }
+}
+void DC_run(int t){
+   analogWrite(speedPin,mSpeed);
+   digitalWrite(dir1,HIGH);
+   delay(t * 10);
+   digitalWrite(dir1,LOW);
+}
+void moveInY(int dir, int steps, Stepper step1, Stepper step2){
+  for(int i = 0; i < steps; i++){
+    step1.step(dir);
+    step2.step(-dir);
+  }
+}
+void moveInX(int dir, int steps, Stepper step1, Stepper step2){
+  for(int i = 0; i < steps; i++){
+    step1.step(dir);
+    step2.step(dir);
+  }
 }
