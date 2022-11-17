@@ -63,18 +63,19 @@ void printScreen(int val, LiquidCrystal lcd){
   lcd.print("value: ");
   lcd.print(val);
 }
-void printScreen2(int val, LiquidCrystal lcd){
+void printScreen2(int val, int* randNum, LiquidCrystal lcd){
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Loading :");
+  lcd.print(*randNum);
   lcd.setCursor(0,1);
-  lcd.print("remaining: ");
+  lcd.print("Load: ");
   lcd.print(val-1);
 }
 
 
 void lower_level(){
-  for(int i =0; i< 200; i++){
+  for(int i =0; i< 100; i++){
    StepperUp.step(1);
    //StepperLeft.step(-1);
    //StepperRight.step(-1);
@@ -82,7 +83,7 @@ void lower_level(){
   }
 }
 void raise_level(){
-  for(int i =0; i< 200; i++){
+  for(int i =0; i< 100; i++){
    StepperUp.step(-1);
    //StepperLeft.step(1);
    //StepperRight.step(1);
@@ -130,16 +131,16 @@ void loop() {
 
     //loading state
     for(int i=0; i<tempval; i++){
-        printScreen2(tempval-i, lcd);
+        printScreen2(tempval-i, &randNum, lcd);
         DC_run();
         delay(100);
     }
+    
     sensor = digitalRead(SENSORPIN);
     
 
     //travel -- maybe make this a function?
     //parameter sensor
-    
     while(sensor != LOW){
       digitalWrite(dir1,HIGH);
       analogWrite(speedPin,mSpeed);
@@ -149,7 +150,7 @@ void loop() {
     
 
     //processing state
-    while(count<=tempval){
+    while(count!=tempval){
         switch(expression) {
             case 0:
                 //prints this case
@@ -157,7 +158,7 @@ void loop() {
                 //runsDC motor
                 DC_run();
                 //falls
-                delay(50);
+                delay(500);
                 //lowers the lift 
                 lower_level();
                 expression ++;
@@ -168,9 +169,14 @@ void loop() {
                 //prints this case
                 printScreen(expression+1,lcd);
                 DC_run();
-                delay(50);
-                raise_level();
+                delay(500);
                 //across
+                for(int i =0; i< 100; i++){
+                  StepperLeft.step(1);
+                  StepperRight.step(1);
+                  delay(10);
+                }
+                raise_level();
                 expression++;
                 count++;
                 break;
@@ -181,7 +187,6 @@ void loop() {
                 DC_run();
                 delay(50);
                 lower_level();
-                //across
                 expression++;
                 count++;
                 break;
