@@ -222,6 +222,7 @@ void loop() {
                 count++;
                 raise_level();
                 expression = 0;
+                buttonState = digitalRead(bt_start);
                 }
                 else{
                   delay(2000);
