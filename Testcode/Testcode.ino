@@ -6,6 +6,7 @@
 
 #define bt_start A1 // Start Button
 #define bt_Stop A2 // Stop Button
+#define SENSORPIN 40
 
 //stepper
 const int stepPerRevolution=200; 
@@ -36,6 +37,9 @@ int randNum = 0;
 int count = 0;
 int tempval = 0;
 
+// variables will change:
+int sensor = 0;
+
 LiquidCrystal lcd(rs,en,d4,d5,d6,d7);
 
 void StartBatch(int* randNum, LiquidCrystal lcd){
@@ -45,7 +49,7 @@ void StartBatch(int* randNum, LiquidCrystal lcd){
   lcd.setCursor(0,0);
   lcd.print("Loading :");
   lcd.setCursor(0,1);
-  lcd.print("Please load: ");
+  lcd.print("Random number: ");
   lcd.print(*randNum);
   delay(1000);
   //*loadTrack = 0;
@@ -65,7 +69,7 @@ void printScreen2(int val, LiquidCrystal lcd){
   lcd.print("Loading :");
   lcd.setCursor(0,1);
   lcd.print("remaining: ");
-  lcd.print(val);
+  lcd.print(val-1);
 }
 
 
@@ -104,8 +108,10 @@ void setup() {
  //DC motor
  pinMode(speedPin,OUTPUT);
  pinMode(dir1,OUTPUT);
- StartBatch(&randNum, lcd);
  delay(10);
+ 
+ pinMode(SENSORPIN, INPUT);     
+ digitalWrite(SENSORPIN, HIGH); // turn on the pullup
  //StepperLeft.setSpeed(30);
  //StepperUp.setSpeed(30);
 }
@@ -113,112 +119,143 @@ void setup() {
 
 //Loop
 void loop() {
-  StartBatch(&randNum, lcd);
-  count = 0;
-  tempval = randNum;
+    //Starts a batch
+    StartBatch(&randNum, lcd);
+    delay(1000);
 
-  //loading state
-  for(int i=0; i<tempval; i++){
-    printScreen2(tempval-i, lcd);
-    DC_run();
-    delay(100);
-  }
- 
- //processing state
- while(count!=tempval){
- switch(expression) {
-  case 0:
-      //prints this case
-      printScreen(expression+1,lcd);
-      //runsDC motor
-      DC_run();
-      //falls
-      delay(50);
-      //lowers the lift 
-      lower_level();
-      expression ++;
-      
-      break;
-  case 1:
-      //prints this case
-      printScreen(expression+1,lcd);
-      DC_run();
-      delay(50);
-      raise_level();
-      //across
-      expression++;
-      break;
-  case 2:
-      //prints this case
-      printScreen(expression+1,lcd);
-      DC_run();
-      delay(50);
-      lower_level();
-      //across
-      expression++;
-      break;
-  case 3:
-      //prints this case
-      printScreen(expression+1,lcd);
-      DC_run();
-      delay(50);
-      raise_level();
-      //across
-      expression++;
-      break;
-  case 4:
-      //prints this case
-      printScreen(expression+1,lcd);
-      DC_run();
-      delay(50);
-      lower_level();
-      //across
-      expression++;
-      break;
-  case 5:
-      //prints this case
-      printScreen(expression+1,lcd);
-      DC_run();
-      delay(50);
-      raise_level();
-      //across
-      expression++;
-      break;
-  case 6:
-      //prints this case
-      printScreen(expression+1,lcd);
-      DC_run();
-      delay(50);
-      lower_level();
-      //across
-      expression++;
-      break;
-  case 7:
-      //prints this case
-      printScreen(expression+1,lcd);
-      DC_run();
-      delay(50);
-      raise_level();
-      expression = 0;
-      break;
-  //This one may be unnecessary
-  /*
-  case 8:
-       DC_run();
-      delay(50);
-      lower_level();
-      //across
-      expression++;
-      break;
-      */
-  default:
-      expression = 0;
-      delay(2000);
-      break;
-  count++;
- }
- }
- 
+    //sets values
+    count = 0;
+    tempval = randNum;
+  
+
+    //loading state
+    for(int i=0; i<tempval; i++){
+        printScreen2(tempval-i, lcd);
+        DC_run();
+        delay(100);
+    }
+    sensor = digitalRead(SENSORPIN);
+    
+
+    //travel -- maybe make this a function?
+    //parameter sensor
+    
+    while(sensor != LOW){
+      digitalWrite(dir1,HIGH);
+      analogWrite(speedPin,mSpeed);
+      sensor = digitalRead(SENSORPIN);
+    }
+    digitalWrite(dir1,HIGH);
+    
+
+    //processing state
+    while(count<=tempval){
+        switch(expression) {
+            case 0:
+                //prints this case
+                printScreen(expression+1,lcd);
+                //runsDC motor
+                DC_run();
+                //falls
+                delay(50);
+                //lowers the lift 
+                lower_level();
+                expression ++;
+                count++;
+                break;
+                
+            case 1:
+                //prints this case
+                printScreen(expression+1,lcd);
+                DC_run();
+                delay(50);
+                raise_level();
+                //across
+                expression++;
+                count++;
+                break;
+                
+            case 2:
+                //prints this case
+                printScreen(expression+1,lcd);
+                DC_run();
+                delay(50);
+                lower_level();
+                //across
+                expression++;
+                count++;
+                break;
+                
+            case 3:
+                //prints this case
+                printScreen(expression+1,lcd);
+                DC_run();
+                delay(50);
+                raise_level();
+                //across
+                expression++;
+                count++;
+                break;
+                
+            case 4:
+                //prints this case
+                printScreen(expression+1,lcd);
+                DC_run();
+                delay(50);
+                lower_level();
+                //across
+                expression++;
+                count++;
+                break;
+                
+            case 5:
+                //prints this case
+                printScreen(expression+1,lcd);
+                DC_run();
+                delay(50);
+                raise_level();
+                //across
+                expression++;
+                count++;
+                break;
+                
+            case 6:
+                //prints this case
+                printScreen(expression+1,lcd);
+                DC_run();
+                delay(50);
+                lower_level();
+                //across
+                expression++;
+                count++;
+                break;
+                
+            case 7:
+                //prints this case
+                printScreen(expression+1,lcd);
+                DC_run();
+                delay(50);
+                raise_level();
+                expression ++;
+                count++;
+                break;
+                //This one may be unnecessary
+                /*
+                case 8:
+                     DC_run();
+                    delay(50);
+                    lower_level();
+                    //across
+                    expression++;
+                    break;
+                    */
+                    
+            default:
+                delay(2000);
+                count++;
+                expression = 0;
+        }
+    }
 
 //delay(10);
 
