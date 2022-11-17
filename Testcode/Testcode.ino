@@ -33,20 +33,21 @@ int j;
 //Everything else
 int expression = 0;
 int randNum = 0;
+int count = 0;
+int tempval = 0;
 
 LiquidCrystal lcd(rs,en,d4,d5,d6,d7);
 
 void StartBatch(int* randNum, LiquidCrystal lcd){
   randomSeed(analogRead(A0));
   *randNum = random(1, 9);
-  delay(200);
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Loading :");
   lcd.setCursor(0,1);
   lcd.print("Please load: ");
   lcd.print(*randNum);
-  delay(100);
+  delay(1000);
   //*loadTrack = 0;
 }
 
@@ -57,8 +58,16 @@ void printScreen(int val, LiquidCrystal lcd){
   lcd.setCursor(0,1);
   lcd.print("value: ");
   lcd.print(val);
-  //*loadTrack = 0;
 }
+void printScreen2(int val, LiquidCrystal lcd){
+  lcd.clear();
+  lcd.setCursor(0,0);
+  lcd.print("Loading :");
+  lcd.setCursor(0,1);
+  lcd.print("remaining: ");
+  lcd.print(val);
+}
+
 
 void lower_level(){
   for(int i =0; i< 200; i++){
@@ -104,22 +113,19 @@ void setup() {
 
 //Loop
 void loop() {
-  /*
   StartBatch(&randNum, lcd);
-  delay(10);
-  */
-  
-  //digitalWrite(dir1,HIGH);
-  //analogWrite(speedPin,mSpeed);
+  count = 0;
+  tempval = randNum;
 
- //StepperLeft.step(stepPerRevolution);
- /*
- for(int i =0; i< 200; i++){
-  //StepperUp.step(1);
-  StepperLeft.step(1);
-  delay(10);
-  */
-
+  //loading state
+  for(int i=0; i<tempval; i++){
+    printScreen2(tempval-i, lcd);
+    DC_run();
+    delay(100);
+  }
+ 
+ //processing state
+ while(count!=tempval){
  switch(expression) {
   case 0:
       //prints this case
@@ -193,7 +199,7 @@ void loop() {
       DC_run();
       delay(50);
       raise_level();
-      expression ++;
+      expression = 0;
       break;
   //This one may be unnecessary
   /*
@@ -207,9 +213,10 @@ void loop() {
       */
   default:
       expression = 0;
-      delay(20);
-      StartBatch(&randNum, lcd);
+      delay(2000);
       break;
+  count++;
+ }
  }
  
 
