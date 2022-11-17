@@ -286,7 +286,7 @@ void raise_level(){
   }
 }
 void DC_run(){
-  for(int i =0; i< 200; i++){
+  for(int i =0; i< 250; i++){
    digitalWrite(dir1,HIGH);
    analogWrite(speedPin,mSpeed);
    delay(10);
