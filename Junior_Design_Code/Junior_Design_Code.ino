@@ -81,7 +81,7 @@ void printScreen2(int val, LiquidCrystal lcd){
 
 
 void lower_level(){
-  for(int i =0; i< 200; i++){
+  for(int i =0; i< 100; i++){
    StepperUp.step(1);
    //StepperLeft.step(-1);
    //StepperRight.step(-1);
@@ -89,7 +89,7 @@ void lower_level(){
   }
 }
 void raise_level(){
-  for(int i =0; i< 200; i++){
+  for(int i =0; i< 100; i++){
    StepperUp.step(-1);
    //StepperLeft.step(1);
    //StepperRight.step(1);
@@ -115,9 +115,9 @@ void setup() {
  pinMode(dir1,OUTPUT);
  delay(10);
  
- pinMode(SENSORPIN, INPUT_PULLUP);//Setting as pullup
+ pinMode(SENSORPIN, INPUT);
  pinMode(SENSORPIN2, INPUT_PULLUP);     
- //digitalWrite(SENSORPIN, HIGH); // turn on the pullup
+ digitalWrite(SENSORPIN, HIGH); // turn on the pullup
  //StepperLeft.setSpeed(30);
  //StepperUp.setSpeed(30);
 }
@@ -144,9 +144,11 @@ void loop() {
     while(count < (int)randNum){
       sensor = digitalRead(SENSORPIN2);
       if(tempval == HIGH && sensor == LOW){
+        //run on beam-break
         digitalWrite(dir1, HIGH);
         //print
       }else if(tempval == LOW && sensor == HIGH){
+        //run on beam-restore
         delay(100);//Spacing between boxes
         digitalWrite(dir1, LOW);
         count++;
