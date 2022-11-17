@@ -78,6 +78,7 @@ void setup() {
 
 //Loop
 void loop() {
+    lcd.clear();
     //Starts a batch
     randomSeed(analogRead(A0));
     randNum = random(1, 9);
