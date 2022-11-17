@@ -7,6 +7,7 @@
 #define bt_start A1 // Start Button
 #define bt_Stop A2 // Stop Button
 #define SENSORPIN 40
+#define SENSORPIN2 41
 
 //stepper
 const int stepPerRevolution=200; 
@@ -110,9 +111,12 @@ void setup() {
  pinMode(speedPin,OUTPUT);
  pinMode(dir1,OUTPUT);
  delay(10);
+
+ pinMode(SENSORPIN, INPUT_PULLUP);//Setting as pullup
+ pinMode(SENSORPIN2, INPUT_PULLUP);   
  
- pinMode(SENSORPIN, INPUT);     
- digitalWrite(SENSORPIN, HIGH); // turn on the pullup
+ //pinMode(SENSORPIN, INPUT);     
+ //digitalWrite(SENSORPIN, HIGH); // turn on the pullup
  //StepperLeft.setSpeed(30);
  //StepperUp.setSpeed(30);
 }
@@ -130,11 +134,30 @@ void loop() {
   
 
     //loading state
+    
     for(int i=0; i<tempval; i++){
         printScreen2(tempval-i, &randNum, lcd);
         DC_run();
         delay(100);
     }
+
+/*
+    tempval = digitalRead(SENSORPIN2);
+        
+    while(count < (int)randNum){
+      sensor = digitalRead(SENSORPIN2);
+      if(tempval == HIGH && sensor == LOW){
+        digitalWrite(dir1, HIGH);
+        //print
+      }else if(tempval == LOW && sensor == HIGH){
+        delay(100);//Spacing between boxes
+        digitalWrite(dir1, LOW);
+        count++;
+        //print
+      }
+      tempval = sensor; //store current into previous
+    }
+    */
     
     sensor = digitalRead(SENSORPIN);
     
@@ -198,6 +221,11 @@ void loop() {
                 delay(50);
                 raise_level();
                 //across
+                for(int i =0; i< 100; i++){
+                  StepperLeft.step(1);
+                  StepperRight.step(1);
+                  delay(10);
+                }
                 expression++;
                 count++;
                 break;
