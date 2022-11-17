@@ -50,13 +50,12 @@ LiquidCrystal lcd(rs,en,d4,d5,d6,d7);
 
 void StartBatch(int* randNum, LiquidCrystal lcd);
 void printScreen(int val, LiquidCrystal lcd);
-void printScreen2(int val, LiquidCrystal lcd);
+void loadingPrint(int val, LiquidCrystal lcd);
 void lower_level();
 void raise_level();
 void DC_run(int t);
-void moveInY(int dir, int steps, Stepper step1, Stepper step2);// moves across belt
-void moveInX(int dir, int steps, Stepper step1, Stepper step2);// moves along belt
-//dir should be 1 or -1
+void moveInY(int dir, int steps, Stepper step1, Stepper step2);
+void moveInX(int dir, int steps, Stepper step1, Stepper step2);//dir should be 1 or -1
 
 
 //Setup
@@ -95,14 +94,16 @@ void loop() {
     //Could be function with two parameters
     //int randNum; int SENSORPIN2
     tempval = digitalRead(SENSORPIN2);
-        
+    loadingPrint(randNum, lcd);  
     while(count < randNum){
       sensor = digitalRead(SENSORPIN2);
       if(tempval == HIGH && sensor == LOW){
-        //run on beam-break
+        //run on beam-break aka a box is placed
         digitalWrite(dir1, HIGH);
         delay(100);
         digitalWrite(dir1, LOW);
+        count++;
+        loadingPrint(randNum - count, lcd);
       }
       tempval = sensor; //store current into previous
     }
@@ -242,7 +243,7 @@ void printScreen(int val, LiquidCrystal lcd){
   lcd.print("value: ");
   lcd.print(val);
 }
-void printScreen2(int val, LiquidCrystal lcd){
+void loadingPrint(int val, LiquidCrystal lcd){
   lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Loading :");
@@ -272,15 +273,15 @@ void DC_run(int t){
    delay(t * 10);
    digitalWrite(dir1,LOW);
 }
-void moveInY(int dir, int steps, Stepper step1, Stepper step2){
+void moveInY(int dir, int steps){
   for(int i = 0; i < steps; i++){
-    step1.step(dir);
-    step2.step(-dir);
+    StepperLeft.step(dir);
+    StepperRight.step(-dir);
   }
 }
 void moveInX(int dir, int steps, Stepper step1, Stepper step2){
   for(int i = 0; i < steps; i++){
-    step1.step(dir);
-    step2.step(dir);
+    StepperLeft.step(dir);
+    StepperRight.step(dir);
   }
 }
