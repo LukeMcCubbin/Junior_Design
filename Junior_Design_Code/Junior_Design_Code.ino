@@ -147,9 +147,10 @@ void loop() {
         //run on beam-break
         digitalWrite(dir1, HIGH);
         //print
-      }else if(tempval == LOW && sensor == HIGH){
+      }
+      if(tempval == LOW && sensor == HIGH){
         //run on beam-restore
-        delay(100);//Spacing between boxes
+        delay(10);//Spacing between boxes
         digitalWrite(dir1, LOW);
         count++;
         //print
