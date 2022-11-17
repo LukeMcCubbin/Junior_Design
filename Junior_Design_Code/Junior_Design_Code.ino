@@ -81,7 +81,7 @@ void printScreen2(int val, LiquidCrystal lcd){
 
 
 void lower_level(){
-  for(int i =0; i< 100; i++){
+  for(int i =0; i< 200; i++){
    StepperUp.step(1);
    //StepperLeft.step(-1);
    //StepperRight.step(-1);
@@ -89,7 +89,7 @@ void lower_level(){
   }
 }
 void raise_level(){
-  for(int i =0; i< 100; i++){
+  for(int i =0; i< 200; i++){
    StepperUp.step(-1);
    //StepperLeft.step(1);
    //StepperRight.step(1);
@@ -115,8 +115,9 @@ void setup() {
  pinMode(dir1,OUTPUT);
  delay(10);
  
- pinMode(SENSORPIN, INPUT);     
- digitalWrite(SENSORPIN, HIGH); // turn on the pullup
+ pinMode(SENSORPIN, INPUT_PULLUP);//Setting as pullup
+ pinMode(SENSORPIN2, INPUT_PULLUP);     
+ //digitalWrite(SENSORPIN, HIGH); // turn on the pullup
  //StepperLeft.setSpeed(30);
  //StepperUp.setSpeed(30);
 }
@@ -131,27 +132,27 @@ void loop() {
     //sets values
     count = 0;//using count to record the boxes loaded
     //using tempVal to record previous reading
-    tempVal = 0;
+    tempval = 0;
   
 
     //loading state
     //Read to get starting "previous" state
     //Could be function with two parameters
     //int randNum; int SENSORPIN2
-    tempVal = digitalRead(SENSORPIN2);
+    tempval = digitalRead(SENSORPIN2);
         
     while(count < (int)randNum){
       sensor = digitalRead(SENSORPIN2);
-      if(tempVal == HIGH && sensor == LOW){
+      if(tempval == HIGH && sensor == LOW){
         digitalWrite(dir1, HIGH);
         //print
-      }else if(tempVal == LOW && sensor == HIGH){
+      }else if(tempval == LOW && sensor == HIGH){
         delay(100);//Spacing between boxes
         digitalWrite(dir1, LOW);
-        tempVal++;
+        count++;
         //print
       }
-      tempVal = sensor; //store current into previous
+      tempval = sensor; //store current into previous
     }
     
     sensor = digitalRead(SENSORPIN);
@@ -167,7 +168,6 @@ void loop() {
     }
     digitalWrite(dir1,HIGH);
     
-
     //processing state
     while(count <= (int)randNum){
         switch(expression) {
