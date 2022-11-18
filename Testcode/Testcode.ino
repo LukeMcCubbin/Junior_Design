@@ -20,7 +20,7 @@ int stepCount = 0;
 int speedPin=52;
 int dir1 = 50;
 //int dir2 = 48;
-int mSpeed=255;
+int mSpeed=500;
 
 //LCD
 int rs=31;
@@ -51,6 +51,7 @@ void printScreen2(int val, int* randNum, LiquidCrystal lcd);
 void lower_level();
 void raise_level();
 void DC_run();
+void DC_run_after();
 void moveInY(int dir, int steps, Stepper step1, Stepper step2);// moves across belt
 void moveInX(int dir, int steps, Stepper step1, Stepper step2);// moves along belt
 
@@ -78,11 +79,13 @@ void setup() {
 
 //Loop
 void loop() {
+    lcd.begin(16,2); 
     lcd.clear();
+    //lcd.begin();
     //Starts a batch
     randomSeed(analogRead(A0));
     randNum = random(1, 9);
-    //randNum = 8;
+    //randNum = 1;
     delay(10);
 
     //sets values
@@ -93,10 +96,11 @@ void loop() {
     //loading state
     
     for(int i=0; i<tempval; i++){
-        printScreen2(tempval-i, &randNum, lcd);
+        printScreen2(tempval-i, randNum, lcd);
         DC_run();
         delay(100);
     }
+    
     
     sensor = digitalRead(SENSORPIN);
     
@@ -109,7 +113,7 @@ void loop() {
       sensor = digitalRead(SENSORPIN);
     }
     digitalWrite(dir1,HIGH);
-    DC_run();
+    DC_run_after();
     
 
     //processing state
@@ -134,7 +138,7 @@ void loop() {
                 DC_run();
                 delay(10);
                 //across
-                moveInY(1,200,StepperLeft, StepperRight);
+                moveInY(1,50,StepperLeft, StepperRight);
                 raise_level();
                 expression++;
                 count++;
@@ -155,7 +159,7 @@ void loop() {
                 printScreen(expression+1,lcd);
                 DC_run();
                 delay(50);
-                moveInX(1,200,StepperLeft, StepperRight);
+                moveInX(1,50,StepperLeft, StepperRight);
                 raise_level();
                 //across
                 expression++;
@@ -178,7 +182,7 @@ void loop() {
                 printScreen(expression+1,lcd);
                 DC_run();
                 delay(50);
-                moveInY(-1,200,StepperLeft, StepperRight);
+                moveInY(-1,50,StepperLeft, StepperRight);
                 raise_level();
                 //across
                 expression++;
@@ -221,7 +225,7 @@ void loop() {
                 if(buttonState == LOW){
                 delay(10);
                 count++;
-                moveInX(-1,200, StepperLeft, StepperRight);
+                moveInX(-1,50, StepperLeft, StepperRight);
                 raise_level();
                 expression = 0;
                 buttonState = digitalRead(bt_start);
@@ -258,11 +262,11 @@ void printScreen(int val, LiquidCrystal lcd){
   lcd.print("State:         ");
   lcd.print(val);
 }
-void printScreen2(int val, int* randNum, LiquidCrystal lcd){
+void printScreen2(int val, int randNum, LiquidCrystal lcd){
   //lcd.clear();
   lcd.setCursor(0,0);
   lcd.print("Loading :      ");
-  lcd.print(*randNum);
+  lcd.print(randNum);
   lcd.setCursor(0,1);
   lcd.print("Remaining:     ");
   lcd.print(val-1);
@@ -270,7 +274,7 @@ void printScreen2(int val, int* randNum, LiquidCrystal lcd){
 
 
 void lower_level(){
-  for(int i =0; i< 100; i++){
+  for(int i =0; i< 200; i++){
    StepperUp.step(1);
    //StepperLeft.step(-1);
    //StepperRight.step(-1);
@@ -278,7 +282,7 @@ void lower_level(){
   }
 }
 void raise_level(){
-  for(int i =0; i< 100; i++){
+  for(int i =0; i< 200; i++){
    StepperUp.step(-1);
    //StepperLeft.step(1);
    //StepperRight.step(1);
@@ -286,7 +290,15 @@ void raise_level(){
   }
 }
 void DC_run(){
-  for(int i =0; i< 250; i++){
+  for(int i =0; i< 350; i++){
+   digitalWrite(dir1,HIGH);
+   analogWrite(speedPin,mSpeed);
+   delay(10);
+  }
+  digitalWrite(dir1,LOW);
+}
+void DC_run_after(){
+  for(int i =0; i< 240; i++){
    digitalWrite(dir1,HIGH);
    analogWrite(speedPin,mSpeed);
    delay(10);
