@@ -79,9 +79,11 @@ void setup() {
 
 //Loop
 void loop() {
+  
+    //LCD Init
     lcd.begin(16,2); 
     lcd.clear();
-    //lcd.begin();
+
     //Starts a batch
     randomSeed(analogRead(A0));
     randNum = random(1, 9);
@@ -209,16 +211,7 @@ void loop() {
                 count;
                 break;
                 //This one may be unnecessary
-                /*
-                case 8:
-                     DC_run();
-                    delay(50);
-                    lower_level();
-                    //across
-                    expression++;
-                    break;
-                    */
-                    
+
             default:
 
                 buttonState = digitalRead(bt_start);
@@ -237,7 +230,6 @@ void loop() {
         }
     }
 
-//delay(10);
 }
 /*
 void StartBatch(int* randNum, LiquidCrystal lcd){ 
