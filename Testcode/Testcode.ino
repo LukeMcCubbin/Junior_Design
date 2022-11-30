@@ -53,9 +53,10 @@ void lower_level();
 void raise_level();
 void DC_run();
 void DC_run_after();
-void moveInY(int dir, int steps, Stepper step1, Stepper step2);// moves across belt
-void moveInX(int dir, int steps, Stepper step1, Stepper step2);// moves along belt
-
+void moveLeft(Stepper step1, Stepper step2);
+void moveUp(Stepper step1, Stepper step2);
+void moveRight(Stepper step1, Stepper step2);
+void moveDown(Stepper step1, Stepper step2);
 
 //Setup
 void setup() {
@@ -298,45 +299,31 @@ void DC_run_after(){
   }
   digitalWrite(dir1,LOW);
 }
-void moveInY(int dir, Stepper step1, Stepper step2){
-  for(int i = 0; i < steps; i++){
-    step1.step(dir);
-    step2.step(-dir);
-    delay(10);
-  }
-}
-void moveInX(int dir, Stepper step1, Stepper step2){
-  for(int i = 0; i < steps; i++){
-    step1.step(dir);
-    step2.step(dir);
-    delay(10);
-  }
-}
 void moveLeft(Stepper step1, Stepper step2){
-  for(int i = 0; i < steps; i++){
-    step1.step(-1);
-    step2.step(-1);
-    delay(10);
-  }
-}
-void moveUp(Stepper step1, Stepper step2){
-    for(int i = 0; i < steps; i++){
-      step1.step(-1);
-      step2.step(1);
-      delay(10);
-    }
-}
-void moveRight(Stepper step1, Stepper step2){
   for(int i = 0; i < steps; i++){
     step1.step(1);
     step2.step(1);
     delay(10);
   }
 }
-void moveDown(Stepper step1, Stepper step2){
-    for(int i = 0; i < steps; i++){
+void moveUp(Stepper step1, Stepper step2){
+    for(int i = 0; i < steps-20; i++){
       step1.step(1);
       step2.step(-1);
+      delay(10);
+    }
+}
+void moveRight(Stepper step1, Stepper step2){
+  for(int i = 0; i < steps; i++){
+    step1.step(-1);
+    step2.step(-1);
+    delay(10);
+  }
+}
+void moveDown(Stepper step1, Stepper step2){
+    for(int i = 0; i < steps-20; i++){
+      step1.step(-1);
+      step2.step(1);
       delay(10);
     }
 }
