@@ -21,7 +21,7 @@ int speedPin=52;
 int dir1 = 50;
 //int dir2 = 48;
 int mSpeed=500;
-int steps = 180;
+int steps = 210;
 
 //LCD
 int rs=31;
@@ -141,7 +141,7 @@ void loop() {
                 DC_run();
                 delay(10);
                 //across
-                moveInY(-1,StepperLeft, StepperRight);
+                moveLeft(StepperLeft, StepperRight);
                 raise_level();
                 expression++;
                 count++;
@@ -162,7 +162,7 @@ void loop() {
                 printScreen(expression+1,lcd);
                 DC_run();
                 delay(50);
-                moveInX(-1,StepperLeft, StepperRight);
+                moveUp(StepperLeft, StepperRight);
                 raise_level();
                 //across
                 expression++;
@@ -185,7 +185,7 @@ void loop() {
                 printScreen(expression+1,lcd);
                 DC_run();
                 delay(50);
-                moveInY(1,StepperLeft, StepperRight);
+                moveRight(StepperLeft, StepperRight);
                 raise_level();
                 //across
                 expression++;
@@ -219,7 +219,7 @@ void loop() {
                 if(buttonState == LOW){
                 delay(10);
                 count++;
-                moveInX(1, StepperLeft, StepperRight);
+                moveDown(StepperLeft, StepperRight);
                 raise_level();
                 expression = 0;
                 buttonState = digitalRead(bt_start);
@@ -311,4 +311,32 @@ void moveInX(int dir, Stepper step1, Stepper step2){
     step2.step(dir);
     delay(10);
   }
+}
+void moveLeft(Stepper step1, Stepper step2){
+  for(int i = 0; i < steps; i++){
+    step1.step(-1);
+    step2.step(-1);
+    delay(10);
+  }
+}
+void moveUp(Stepper step1, Stepper step2){
+    for(int i = 0; i < steps; i++){
+      step1.step(-1);
+      step2.step(1);
+      delay(10);
+    }
+}
+void moveRight(Stepper step1, Stepper step2){
+  for(int i = 0; i < steps; i++){
+    step1.step(1);
+    step2.step(1);
+    delay(10);
+  }
+}
+void moveDown(Stepper step1, Stepper step2){
+    for(int i = 0; i < steps; i++){
+      step1.step(1);
+      step2.step(-1);
+      delay(10);
+    }
 }
