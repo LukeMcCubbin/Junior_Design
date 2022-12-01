@@ -1,12 +1,6 @@
-// Junior Design Code
-//[Arum] Replaced code with Luke's test code with expanded loading process and edits to DC run
-//Comments 
-/*
- * Sections to write are 1. overall code, 2. Conveyor belt, 3. sensors, 4. XY  coordinate
- * 
- */
+//Junior Design Project Code
 
-//Define 
+//This code is for loading a single layer.
 #include<LiquidCrystal.h>
 #include <Stepper.h>
 
@@ -20,12 +14,14 @@ const int stepPerRevolution=200;
 Stepper StepperLeft(stepPerRevolution, 2,3,4,5);
 Stepper StepperRight(stepPerRevolution, 6,7,8,9);
 Stepper StepperUp(stepPerRevolution, 10,11,12,13);
+int stepCount = 0; 
 
 //DC Motor
 int speedPin=52;
 int dir1 = 50;
 //int dir2 = 48;
-int mSpeed=255;
+int mSpeed=500;
+int steps = 260;
 
 //LCD
 int rs=31;
@@ -45,18 +41,22 @@ int tempval = 0;
 
 // variables will change:
 int sensor = 0;
+int buttonState = 0;
 
 LiquidCrystal lcd(rs,en,d4,d5,d6,d7);
 
-void StartBatch(int* randNum, LiquidCrystal lcd);
 void printScreen(int val, LiquidCrystal lcd);
-void loadingPrint(int val, LiquidCrystal lcd);
+void printScreen2(int val, int* randNum, LiquidCrystal lcd);
+
+//moving conveyor
 void lower_level();
 void raise_level();
-void DC_run(int t);
-void moveInY(int dir, int steps, Stepper step1, Stepper step2);
-void moveInX(int dir, int steps, Stepper step1, Stepper step2);//dir should be 1 or -1
-
+void DC_run();
+void DC_run_after();
+void moveLeft(Stepper step1, Stepper step2);
+void moveUp(Stepper step1, Stepper step2);
+void moveRight(Stepper step1, Stepper step2);
+void moveDown(Stepper step1, Stepper step2);
 
 //Setup
 void setup() {
@@ -67,11 +67,13 @@ void setup() {
  pinMode(speedPin,OUTPUT);
  pinMode(dir1,OUTPUT);
  delay(10);
- 
- pinMode(SENSORPIN, INPUT);
- pinMode(SENSORPIN2, INPUT_PULLUP);     
- digitalWrite(SENSORPIN, HIGH); // turn on the pullup
+
  pinMode(bt_start, INPUT);
+ 
+ 
+ pinMode(SENSORPIN, INPUT);     
+ digitalWrite(SENSORPIN, HIGH); // turn on the pullup
+ digitalWrite(bt_start, HIGH);
  //StepperLeft.setSpeed(30);
  //StepperUp.setSpeed(30);
 }
@@ -79,209 +81,268 @@ void setup() {
 
 //Loop
 void loop() {
+  
+    //LCD Init
+    lcd.begin(16,2); 
+    lcd.clear();
+
     //Starts a batch
-    StartBatch(&randNum, lcd);
-    delay(1000);
+    randomSeed(analogRead(A0));
+    //randNum = random(1, 9);
+    randNum = 8;
+    delay(10);
 
     //sets values
-    count = 0;//using count to record the boxes loaded
-    //using tempVal to record previous reading
-    tempval = 0;
-  
-
-    //loading state
-    //Read to get starting "previous" state
-    //Could be function with two parameters
-    //int randNum; int SENSORPIN2
-    tempval = digitalRead(SENSORPIN2);
-    loadingPrint(randNum, lcd);  
-    while(count < randNum){
-      sensor = digitalRead(SENSORPIN2);
-      if(tempval == HIGH && sensor == LOW){
-        //run on beam-break aka a box is placed
-        digitalWrite(dir1, HIGH);
+    count = 0;
+    tempval = randNum;
+    buttonState = digitalRead(bt_start);
+    
+    for(int i=0; i<tempval; i++){
+        printScreen2(tempval-i, randNum, lcd);
+        DC_run();
         delay(100);
-        digitalWrite(dir1, LOW);
-        count++;
-        loadingPrint(randNum - count, lcd);
-      }
-      tempval = sensor; //store current into previous
     }
     
+    
     sensor = digitalRead(SENSORPIN);
-    count = 0; //reset count
+    
 
     //travel -- maybe make this a function?
     //parameter sensor
-    
     while(sensor != LOW){
       digitalWrite(dir1,HIGH);
       analogWrite(speedPin,mSpeed);
       sensor = digitalRead(SENSORPIN);
     }
     digitalWrite(dir1,HIGH);
+    DC_run_after();
     
+
     //processing state
-    while(count <= (int)randNum){
+    while(count<=tempval-1){
         switch(expression) {
             case 0:
+                lcd.clear();
+                lcd.begin(16,2); 
+                Serial.begin(9600);
                 //prints this case
                 printScreen(expression+1,lcd);
-                //runsDC motor
-                DC_run(200);
-                //falls
+                DC_run();
                 delay(50);
-                //lowers the lift 
                 lower_level();
+                moveLeft(StepperLeft, StepperRight);
+                raise_level();
                 expression ++;
                 count++;
+                delay(50);
                 break;
                 
             case 1:
+                lcd.clear();
+                lcd.begin(16,2); 
+                Serial.begin(9600);
                 //prints this case
                 printScreen(expression+1,lcd);
-                DC_run(200);
+                DC_run();
                 delay(50);
-                raise_level();
                 //across
+                lower_level();
+                moveUp(StepperLeft, StepperRight);
+                raise_level();
                 expression++;
                 count++;
+                delay(50);
                 break;
                 
             case 2:
+                lcd.clear();
+                lcd.begin(16,2); 
+                Serial.begin(9600);
                 //prints this case
                 printScreen(expression+1,lcd);
-                DC_run(200);
+                DC_run();
                 delay(50);
                 lower_level();
-                //across
+                moveRight(StepperLeft, StepperRight);
+                raise_level();
                 expression++;
                 count++;
+                delay(50);
                 break;
                 
             case 3:
                 //prints this case
                 printScreen(expression+1,lcd);
-                DC_run(200);
+                DC_run();
                 delay(50);
+                lower_level();
+                moveDown(StepperLeft, StepperRight);
                 raise_level();
                 //across
                 expression++;
                 count++;
+                delay(50);
                 break;
                 
             case 4:
+                lcd.clear();
+                lcd.begin(16,2); 
+                Serial.begin(9600);
                 //prints this case
                 printScreen(expression+1,lcd);
-                DC_run(200);
-                delay(50);
+                DC_run();
                 lower_level();
-                //across
+                delay(50);
                 expression++;
                 count++;
                 break;
                 
             case 5:
+                lcd.begin(16,2); 
+                Serial.begin(9600);
                 //prints this case
                 printScreen(expression+1,lcd);
-                DC_run(200);
+                DC_run();
                 delay(50);
+                lower_level();
+                moveLeft(StepperLeft, StepperRight);
                 raise_level();
                 //across
                 expression++;
                 count++;
+                delay(50);
                 break;
                 
             case 6:
+                lcd.clear();
+                lcd.begin(16,2); 
+                Serial.begin(9600);
                 //prints this case
                 printScreen(expression+1,lcd);
-                DC_run(200);
+                DC_run();
                 delay(50);
                 lower_level();
+                moveUp(StepperLeft, StepperRight);
+                raise_level();
+                delay(50);
                 //across
                 expression++;
                 count++;
                 break;
                 
             case 7:
+                lcd.clear();
+                lcd.begin(16,2); 
+                Serial.begin(9600);
                 //prints this case
                 printScreen(expression+1,lcd);
-                DC_run(200);
+                DC_run();
                 delay(50);
+                lower_level();
+                moveRight(StepperLeft, StepperRight);
+                raise_level();
                 expression ++;
-                count++;
+                count;
+                delay(50);
                 break;
+                //This one may be unnecessary
+
             default:
-            //Could be a rest state for replacing the pallet
+                lcd.clear();
+                lcd.begin(16,2); 
+                Serial.begin(9600);
+                buttonState = digitalRead(bt_start);
+                if(buttonState == LOW){
                 delay(10);
-                if(digitalRead(bt_start) == HIGH){
-                  expression = 0;
-                  raise_level();
+                count++;
+                moveDown(StepperLeft, StepperRight);
+                raise_level();
+                raise_level();
+                expression = 0;
+                buttonState = digitalRead(bt_start);
                 }
+                else{
+                  delay(200);
+                }
+
         }
     }
-}
 
-void StartBatch(int* randNum, LiquidCrystal lcd){
-  randomSeed(analogRead(A0));
-  *randNum = random(1, 9);
-  lcd.clear();
-  lcd.setCursor(0,0);
-  lcd.print("Loading :");
-  lcd.setCursor(0,1);
-  lcd.print("Random number: ");
-  lcd.print(*randNum);
-  delay(1000);
-  //*loadTrack = 0;
 }
 
 void printScreen(int val, LiquidCrystal lcd){
-  lcd.clear();
+  //lcd.clear();
+  delay(10);
   lcd.setCursor(0,0);
-  lcd.print("Processing :");
+  lcd.print("Processing :    ");
   lcd.setCursor(0,1);
-  lcd.print("value: ");
+  lcd.print("State:         ");
   lcd.print(val);
 }
-void loadingPrint(int val, LiquidCrystal lcd){
-  lcd.clear();
+void printScreen2(int val, int randNum, LiquidCrystal lcd){
+  //lcd.clear();
   lcd.setCursor(0,0);
-  lcd.print("Loading :");
+  lcd.print("Loading :      ");
+  lcd.print(randNum);
   lcd.setCursor(0,1);
-  lcd.print("remaining: ");
+  lcd.print("Remaining:     ");
   lcd.print(val-1);
 }
+
+
 void lower_level(){
-  for(int i =0; i< 100; i++){
+  for(int i =0; i< 180; i++){
    StepperUp.step(1);
-   //StepperLeft.step(-1);
-   //StepperRight.step(-1);
    delay(10);
   }
 }
 void raise_level(){
-  for(int i =0; i< 100; i++){
+  for(int i =0; i< 180; i++){
    StepperUp.step(-1);
-   //StepperLeft.step(1);
-   //StepperRight.step(1);
    delay(10);
   }
 }
-void DC_run(int t){
-   analogWrite(speedPin,mSpeed);
+void DC_run(){
+  for(int i =0; i< 240; i++){
    digitalWrite(dir1,HIGH);
-   delay(t * 10);
-   digitalWrite(dir1,LOW);
+   analogWrite(speedPin,mSpeed);
+   delay(10);
+  }
+  digitalWrite(dir1,LOW);
 }
-void moveInY(int dir, int steps){
+void DC_run_after(){
+  for(int i =0; i< 350; i++){
+   digitalWrite(dir1,HIGH);
+   analogWrite(speedPin,mSpeed);
+   delay(10);
+  }
+  digitalWrite(dir1,LOW);
+}
+void moveLeft(Stepper step1, Stepper step2){
   for(int i = 0; i < steps; i++){
-    StepperLeft.step(dir);
-    StepperRight.step(-dir);
+    step1.step(1);
+    step2.step(1);
+    delay(10);
   }
 }
-void moveInX(int dir, int steps, Stepper step1, Stepper step2){
+void moveUp(Stepper step1, Stepper step2){
+    for(int i = 0; i < steps-10; i++){
+      step1.step(1);
+      step2.step(-1);
+      delay(10);
+    }
+}
+void moveRight(Stepper step1, Stepper step2){
   for(int i = 0; i < steps; i++){
-    StepperLeft.step(dir);
-    StepperRight.step(dir);
+    step1.step(-1);
+    step2.step(-1);
+    delay(10);
   }
+}
+void moveDown(Stepper step1, Stepper step2){
+    for(int i = 0; i < steps-10; i++){
+      step1.step(-1);
+      step2.step(1);
+      delay(10);
+    }
 }
