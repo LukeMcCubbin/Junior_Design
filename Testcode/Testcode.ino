@@ -21,7 +21,7 @@ int speedPin=52;
 int dir1 = 50;
 //int dir2 = 48;
 int mSpeed=500;
-int steps = 230;
+int steps = 260;
 
 //LCD
 int rs=31;
@@ -96,8 +96,6 @@ void loop() {
     count = 0;
     tempval = randNum;
     buttonState = digitalRead(bt_start);
-
-    //loading state
     
     for(int i=0; i<tempval; i++){
         printScreen2(tempval-i, randNum, lcd);
@@ -124,6 +122,9 @@ void loop() {
     while(count<=tempval-1){
         switch(expression) {
             case 0:
+                lcd.clear();
+                lcd.begin(16,2); 
+                Serial.begin(9600);
                 //prints this case
                 printScreen(expression+1,lcd);
                 //runsDC motor
@@ -134,6 +135,9 @@ void loop() {
                 break;
                 
             case 1:
+                lcd.clear();
+                lcd.begin(16,2); 
+                Serial.begin(9600);
                 //prints this case
                 printScreen(expression+1,lcd);
                 DC_run();
@@ -147,6 +151,9 @@ void loop() {
                 break;
                 
             case 2:
+                lcd.clear();
+                lcd.begin(16,2); 
+                Serial.begin(9600);
                 //prints this case
                 printScreen(expression+1,lcd);
                 DC_run();
@@ -169,6 +176,9 @@ void loop() {
                 break;
                 
             case 4:
+                lcd.clear();
+                lcd.begin(16,2); 
+                Serial.begin(9600);
                 //prints this case
                 printScreen(expression+1,lcd);
                 DC_run();
@@ -178,6 +188,8 @@ void loop() {
                 break;
                 
             case 5:
+                lcd.begin(16,2); 
+                Serial.begin(9600);
                 //prints this case
                 printScreen(expression+1,lcd);
                 DC_run();
@@ -191,6 +203,9 @@ void loop() {
                 break;
                 
             case 6:
+                lcd.clear();
+                lcd.begin(16,2); 
+                Serial.begin(9600);
                 //prints this case
                 printScreen(expression+1,lcd);
                 DC_run();
@@ -201,6 +216,9 @@ void loop() {
                 break;
                 
             case 7:
+                lcd.clear();
+                lcd.begin(16,2); 
+                Serial.begin(9600);
                 //prints this case
                 printScreen(expression+1,lcd);
                 DC_run();
@@ -212,7 +230,9 @@ void loop() {
                 //This one may be unnecessary
 
             default:
-
+                lcd.clear();
+                lcd.begin(16,2); 
+                Serial.begin(9600);
                 buttonState = digitalRead(bt_start);
                 if(buttonState == LOW){
                 delay(10);
@@ -230,19 +250,6 @@ void loop() {
     }
 
 }
-/*
-void StartBatch(int* randNum, LiquidCrystal lcd){ 
-  lcd.clear();
-  delay(10);
-  lcd.setCursor(0,0);
-  lcd.print("Loading :    ");
-  lcd.setCursor(0,1);
-  lcd.print("Random number: ");
-  lcd.print(*randNum);
-  delay(1000);
-  //*loadTrack = 0;
-}
-*/
 
 void printScreen(int val, LiquidCrystal lcd){
   //lcd.clear();
@@ -265,19 +272,19 @@ void printScreen2(int val, int randNum, LiquidCrystal lcd){
 
 
 void lower_level(){
-  for(int i =0; i< 270; i++){
+  for(int i =0; i< 235; i++){
    StepperUp.step(1);
    delay(10);
   }
 }
 void raise_level(){
-  for(int i =0; i< 270; i++){
+  for(int i =0; i< 235; i++){
    StepperUp.step(-1);
    delay(10);
   }
 }
 void DC_run(){
-  for(int i =0; i< 360; i++){
+  for(int i =0; i< 240; i++){
    digitalWrite(dir1,HIGH);
    analogWrite(speedPin,mSpeed);
    delay(10);
@@ -285,7 +292,7 @@ void DC_run(){
   digitalWrite(dir1,LOW);
 }
 void DC_run_after(){
-  for(int i =0; i< 250; i++){
+  for(int i =0; i< 350; i++){
    digitalWrite(dir1,HIGH);
    analogWrite(speedPin,mSpeed);
    delay(10);
