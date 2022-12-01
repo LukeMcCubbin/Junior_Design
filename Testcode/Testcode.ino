@@ -21,7 +21,7 @@ int speedPin=52;
 int dir1 = 50;
 //int dir2 = 48;
 int mSpeed=500;
-int steps = 210;
+int steps = 230;
 
 //LCD
 int rs=31;
@@ -128,10 +128,7 @@ void loop() {
                 printScreen(expression+1,lcd);
                 //runsDC motor
                 DC_run();
-                //falls
                 delay(10);
-                //lowers the lift 
-                lower_level();
                 expression ++;
                 count++;
                 break;
@@ -142,6 +139,7 @@ void loop() {
                 DC_run();
                 delay(10);
                 //across
+                lower_level();
                 moveLeft(StepperLeft, StepperRight);
                 raise_level();
                 expression++;
@@ -153,7 +151,6 @@ void loop() {
                 printScreen(expression+1,lcd);
                 DC_run();
                 delay(10);
-                lower_level();
                 expression++;
                 count++;
                 break;
@@ -163,6 +160,7 @@ void loop() {
                 printScreen(expression+1,lcd);
                 DC_run();
                 delay(50);
+                lower_level();
                 moveUp(StepperLeft, StepperRight);
                 raise_level();
                 //across
@@ -175,8 +173,6 @@ void loop() {
                 printScreen(expression+1,lcd);
                 DC_run();
                 delay(50);
-                lower_level();
-                //across
                 expression++;
                 count++;
                 break;
@@ -186,6 +182,7 @@ void loop() {
                 printScreen(expression+1,lcd);
                 DC_run();
                 delay(50);
+                lower_level();
                 moveRight(StepperLeft, StepperRight);
                 raise_level();
                 //across
@@ -198,7 +195,6 @@ void loop() {
                 printScreen(expression+1,lcd);
                 DC_run();
                 delay(50);
-                lower_level();
                 //across
                 expression++;
                 count++;
@@ -209,6 +205,7 @@ void loop() {
                 printScreen(expression+1,lcd);
                 DC_run();
                 delay(10);
+                lower_level();
                 expression ++;
                 count;
                 break;
@@ -226,7 +223,7 @@ void loop() {
                 buttonState = digitalRead(bt_start);
                 }
                 else{
-                  delay(2000);
+                  delay(200);
                 }
 
         }
@@ -268,18 +265,14 @@ void printScreen2(int val, int randNum, LiquidCrystal lcd){
 
 
 void lower_level(){
-  for(int i =0; i< 200; i++){
+  for(int i =0; i< 270; i++){
    StepperUp.step(1);
-   //StepperLeft.step(-1);
-   //StepperRight.step(-1);
    delay(10);
   }
 }
 void raise_level(){
-  for(int i =0; i< 190; i++){
+  for(int i =0; i< 270; i++){
    StepperUp.step(-1);
-   //StepperLeft.step(1);
-   //StepperRight.step(1);
    delay(10);
   }
 }
@@ -307,7 +300,7 @@ void moveLeft(Stepper step1, Stepper step2){
   }
 }
 void moveUp(Stepper step1, Stepper step2){
-    for(int i = 0; i < steps-20; i++){
+    for(int i = 0; i < steps-10; i++){
       step1.step(1);
       step2.step(-1);
       delay(10);
@@ -321,7 +314,7 @@ void moveRight(Stepper step1, Stepper step2){
   }
 }
 void moveDown(Stepper step1, Stepper step2){
-    for(int i = 0; i < steps-20; i++){
+    for(int i = 0; i < steps-10; i++){
       step1.step(-1);
       step2.step(1);
       delay(10);
