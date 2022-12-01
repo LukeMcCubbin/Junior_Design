@@ -1,6 +1,6 @@
+//Junior Design Project Code
 
-//LCD Code
-/* PROJECT BY MANISH KUMAR YADAV*/
+//This code is for loading both stacks at once
 #include<LiquidCrystal.h>
 #include <Stepper.h>
 
