@@ -22,6 +22,7 @@ int dir1 = 50;
 //int dir2 = 48;
 int mSpeed=500;
 int steps = 260;
+int steps1 = 210;
 
 //LCD
 int rs=31;
@@ -99,7 +100,7 @@ void loop() {
     
     for(int i=0; i<tempval; i++){
         printScreen2(tempval-i, randNum, lcd);
-        DC_run();
+        DC_runConveyor();
         delay(100);
     }
     
@@ -143,9 +144,9 @@ void loop() {
                 DC_run();
                 delay(10);
                 //across
-                lower_level();
+                lower_level(steps1);
                 moveLeft(StepperLeft, StepperRight);
-                raise_level();
+                raise_level(steps1+5);
                 expression++;
                 count++;
                 break;
@@ -167,9 +168,9 @@ void loop() {
                 printScreen(expression+1,lcd);
                 DC_run();
                 delay(50);
-                lower_level();
+                lower_level(steps1-5);
                 moveUp(StepperLeft, StepperRight);
-                raise_level();
+                raise_level(steps1+10);
                 //across
                 expression++;
                 count++;
@@ -194,9 +195,9 @@ void loop() {
                 printScreen(expression+1,lcd);
                 DC_run();
                 delay(50);
-                lower_level();
+                lower_level(steps1-5);
                 moveRight(StepperLeft, StepperRight);
-                raise_level();
+                raise_level(steps1+5);
                 //across
                 expression++;
                 count++;
@@ -223,7 +224,7 @@ void loop() {
                 printScreen(expression+1,lcd);
                 DC_run();
                 delay(10);
-                lower_level();
+                lower_level(steps1);
                 expression ++;
                 count;
                 break;
@@ -238,7 +239,7 @@ void loop() {
                 delay(10);
                 count++;
                 moveDown(StepperLeft, StepperRight);
-                raise_level();
+                raise_level(steps1+20);
                 expression = 0;
                 buttonState = digitalRead(bt_start);
                 }
@@ -271,17 +272,25 @@ void printScreen2(int val, int randNum, LiquidCrystal lcd){
 }
 
 
-void lower_level(){
-  for(int i =0; i< 235; i++){
+void lower_level(int step1){
+  for(int i =0; i< step1; i++){
    StepperUp.step(1);
    delay(10);
   }
 }
-void raise_level(){
-  for(int i =0; i< 235; i++){
+void raise_level(int step1){
+  for(int i =0; i< step1; i++){
    StepperUp.step(-1);
    delay(10);
   }
+}
+void DC_runConveyor(){
+  for(int i =0; i< 260; i++){
+   digitalWrite(dir1,HIGH);
+   analogWrite(speedPin,mSpeed);
+   delay(10);
+  }
+  digitalWrite(dir1,LOW);
 }
 void DC_run(){
   for(int i =0; i< 270; i++){
